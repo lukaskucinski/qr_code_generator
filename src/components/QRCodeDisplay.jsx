@@ -1,7 +1,65 @@
-import { QRCodeCanvas } from 'qrcode.react'
+import { useEffect, useRef } from 'react'
+import QRCodeStyling from 'qr-code-styling'
 
-function QRCodeDisplay({ url, isValid, size = 192 }) {
+function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
   const containerSize = size + 32
+  const ref = useRef(null)
+  const qrCode = useRef(null)
+
+  useEffect(() => {
+    if (!qrCode.current) {
+      qrCode.current = new QRCodeStyling({
+        width: size,
+        height: size,
+        type: 'canvas',
+        data: url || 'https://example.com',
+        dotsOptions: {
+          type: dotStyle,
+          color: '#000000',
+        },
+        cornersSquareOptions: {
+          type: dotStyle === 'dots' ? 'dot' : dotStyle === 'rounded' ? 'extra-rounded' : 'square',
+          color: '#000000',
+        },
+        cornersDotOptions: {
+          type: dotStyle === 'dots' ? 'dot' : 'square',
+          color: '#000000',
+        },
+        backgroundOptions: {
+          color: '#ffffff',
+        },
+        qrOptions: {
+          errorCorrectionLevel: 'M',
+        },
+      })
+    }
+
+    if (ref.current && !ref.current.hasChildNodes()) {
+      qrCode.current.append(ref.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (qrCode.current) {
+      qrCode.current.update({
+        width: size,
+        height: size,
+        data: url || 'https://example.com',
+        dotsOptions: {
+          type: dotStyle,
+          color: '#000000',
+        },
+        cornersSquareOptions: {
+          type: dotStyle === 'dots' ? 'dot' : dotStyle === 'rounded' ? 'extra-rounded' : 'square',
+          color: '#000000',
+        },
+        cornersDotOptions: {
+          type: dotStyle === 'dots' ? 'dot' : 'square',
+          color: '#000000',
+        },
+      })
+    }
+  }, [url, size, dotStyle])
 
   return (
     <div className="flex items-center justify-center">
@@ -11,14 +69,7 @@ function QRCodeDisplay({ url, isValid, size = 192 }) {
       >
         {isValid ? (
           <div className="animate-fade-in p-4 bg-white rounded-lg">
-            <QRCodeCanvas
-              id="qr-canvas"
-              value={url}
-              size={size}
-              level="M"
-              bgColor="#ffffff"
-              fgColor="#000000"
-            />
+            <div ref={ref} id="qr-canvas" />
           </div>
         ) : (
           <PlaceholderIcon />

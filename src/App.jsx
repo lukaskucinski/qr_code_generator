@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header'
 import URLInput from './components/URLInput'
 import SizeSelector, { sizes } from './components/SizeSelector'
+import StyleSelector from './components/StyleSelector'
 import QRCodeDisplay from './components/QRCodeDisplay'
 import DownloadButton from './components/DownloadButton'
 import Footer from './components/Footer'
@@ -12,6 +13,7 @@ function App() {
   const [isValid, setIsValid] = useState(false)
   const [hasInput, setHasInput] = useState(false)
   const [selectedSize, setSelectedSize] = useState('medium')
+  const [selectedStyle, setSelectedStyle] = useState('square')
 
   const qrSize = sizes.find((s) => s.key === selectedSize)?.value || 220
 
@@ -60,8 +62,20 @@ function App() {
             />
           </div>
 
+          <div className="mt-4">
+            <StyleSelector
+              selectedStyle={selectedStyle}
+              onStyleChange={setSelectedStyle}
+            />
+          </div>
+
           <div className="mt-6">
-            <QRCodeDisplay url={debouncedUrl} isValid={isValid} size={qrSize} />
+            <QRCodeDisplay
+              url={debouncedUrl}
+              isValid={isValid}
+              size={qrSize}
+              dotStyle={selectedStyle}
+            />
           </div>
 
           {isValid && (

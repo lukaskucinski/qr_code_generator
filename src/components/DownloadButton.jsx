@@ -1,6 +1,7 @@
 function DownloadButton() {
   const handleDownload = () => {
-    const canvas = document.getElementById('qr-canvas')
+    const container = document.getElementById('qr-canvas')
+    const canvas = container?.querySelector('canvas')
     if (!canvas) return
 
     const url = canvas.toDataURL('image/png')
