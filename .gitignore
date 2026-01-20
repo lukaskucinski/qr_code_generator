@@ -29,3 +29,4 @@ npm-debug.log*
 
 # Local Claude settings
 .claude/
+CLAUDE.md
