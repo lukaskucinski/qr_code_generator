@@ -13,7 +13,9 @@ function App() {
   const [hasInput, setHasInput] = useState(false)
   const [selectedSize, setSelectedSize] = useState('medium')
 
-  const qrSize = sizes.find((s) => s.key === selectedSize)?.value || 192
+  const qrSize = sizes.find((s) => s.key === selectedSize)?.value || 220
+
+  const containerWidth = Math.max(400, qrSize + 80)
 
   const validateURL = useCallback((string) => {
     if (!string.trim()) return false
@@ -37,7 +39,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div
+        className="w-full transition-all duration-300"
+        style={{ maxWidth: containerWidth }}
+      >
         <Header />
 
         <div className="mt-8 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl">
