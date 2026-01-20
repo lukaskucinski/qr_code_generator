@@ -1,7 +1,40 @@
 import { useEffect, useRef } from 'react'
 import QRCodeStyling from 'qr-code-styling'
 
-function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
+function buildDotsOptions(dotStyle, shapeColor, useGradient, gradientSecondColor, radialGradient) {
+  if (useGradient) {
+    return {
+      type: dotStyle,
+      color: undefined,
+      gradient: {
+        type: radialGradient ? 'radial' : 'linear',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: shapeColor },
+          { offset: 1, color: gradientSecondColor },
+        ],
+      },
+    }
+  }
+
+  return {
+    type: dotStyle,
+    color: shapeColor,
+    gradient: undefined,
+  }
+}
+
+function QRCodeDisplay({
+  url,
+  isValid,
+  size = 192,
+  dotStyle = 'square',
+  backgroundColor = '#ffffff',
+  shapeColor = '#000000',
+  useGradient = false,
+  gradientSecondColor = '#15A97C',
+  radialGradient = false,
+}) {
   const containerSize = size + 32
   const ref = useRef(null)
   const qrCode = useRef(null)
@@ -13,20 +46,17 @@ function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
         height: size,
         type: 'canvas',
         data: url || 'https://example.com',
-        dotsOptions: {
-          type: dotStyle,
-          color: '#000000',
-        },
+        dotsOptions: buildDotsOptions(dotStyle, shapeColor, useGradient, gradientSecondColor, radialGradient),
         cornersSquareOptions: {
           type: dotStyle === 'dots' ? 'dot' : dotStyle === 'rounded' ? 'extra-rounded' : 'square',
-          color: '#000000',
+          color: shapeColor,
         },
         cornersDotOptions: {
           type: dotStyle === 'dots' ? 'dot' : 'square',
-          color: '#000000',
+          color: shapeColor,
         },
         backgroundOptions: {
-          color: '#ffffff',
+          color: backgroundColor,
         },
         qrOptions: {
           errorCorrectionLevel: 'M',
@@ -48,21 +78,21 @@ function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
         width: size,
         height: size,
         data: url || 'https://example.com',
-        dotsOptions: {
-          type: dotStyle,
-          color: '#000000',
-        },
+        dotsOptions: buildDotsOptions(dotStyle, shapeColor, useGradient, gradientSecondColor, radialGradient),
         cornersSquareOptions: {
           type: dotStyle === 'dots' ? 'dot' : dotStyle === 'rounded' ? 'extra-rounded' : 'square',
-          color: '#000000',
+          color: shapeColor,
         },
         cornersDotOptions: {
           type: dotStyle === 'dots' ? 'dot' : 'square',
-          color: '#000000',
+          color: shapeColor,
+        },
+        backgroundOptions: {
+          color: backgroundColor,
         },
       })
     }
-  }, [url, size, dotStyle])
+  }, [url, size, dotStyle, backgroundColor, shapeColor, useGradient, gradientSecondColor, radialGradient])
 
   return (
     <div className="flex items-center justify-center">
@@ -71,7 +101,10 @@ function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
         style={{ width: containerSize, height: containerSize }}
       >
         {isValid ? (
-          <div className="animate-fade-in p-4 bg-white rounded-lg">
+          <div
+            className={`animate-fade-in p-4 rounded-lg ${backgroundColor === 'transparent' ? 'bg-[repeating-conic-gradient(#e5e5e5_0%_25%,#fafafa_0%_50%)] bg-[length:12px_12px]' : ''}`}
+            style={backgroundColor !== 'transparent' ? { backgroundColor } : undefined}
+          >
             <div ref={ref} id="qr-canvas" />
           </div>
         ) : (
