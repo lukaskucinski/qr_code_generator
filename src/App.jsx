@@ -3,6 +3,7 @@ import Header from './components/Header'
 import URLInput from './components/URLInput'
 import SizeSelector, { sizes } from './components/SizeSelector'
 import StyleSelector from './components/StyleSelector'
+import ColorOptions from './components/ColorOptions'
 import QRCodeDisplay from './components/QRCodeDisplay'
 import DownloadButton from './components/DownloadButton'
 import Footer from './components/Footer'
@@ -14,6 +15,14 @@ function App() {
   const [hasInput, setHasInput] = useState(false)
   const [selectedSize, setSelectedSize] = useState('medium')
   const [selectedStyle, setSelectedStyle] = useState('square')
+
+  // Color options
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF')
+  const [transparentBackground, setTransparentBackground] = useState(false)
+  const [shapeColor, setShapeColor] = useState('#000000')
+  const [useGradient, setUseGradient] = useState(false)
+  const [gradientSecondColor, setGradientSecondColor] = useState('#15A97C')
+  const [radialGradient, setRadialGradient] = useState(false)
 
   const qrSize = sizes.find((s) => s.key === selectedSize)?.value || 220
 
@@ -69,12 +78,34 @@ function App() {
             />
           </div>
 
+          <div className="mt-4">
+            <ColorOptions
+              backgroundColor={backgroundColor}
+              onBackgroundColorChange={setBackgroundColor}
+              transparentBackground={transparentBackground}
+              onTransparentBackgroundChange={setTransparentBackground}
+              shapeColor={shapeColor}
+              onShapeColorChange={setShapeColor}
+              useGradient={useGradient}
+              onUseGradientChange={setUseGradient}
+              gradientSecondColor={gradientSecondColor}
+              onGradientSecondColorChange={setGradientSecondColor}
+              radialGradient={radialGradient}
+              onRadialGradientChange={setRadialGradient}
+            />
+          </div>
+
           <div className="mt-6">
             <QRCodeDisplay
               url={debouncedUrl}
               isValid={isValid}
               size={qrSize}
               dotStyle={selectedStyle}
+              backgroundColor={transparentBackground ? 'transparent' : backgroundColor}
+              shapeColor={shapeColor}
+              useGradient={useGradient}
+              gradientSecondColor={gradientSecondColor}
+              radialGradient={radialGradient}
             />
           </div>
 
