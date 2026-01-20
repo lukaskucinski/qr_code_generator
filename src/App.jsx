@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Header from './components/Header'
 import URLInput from './components/URLInput'
+import SizeSelector, { sizes } from './components/SizeSelector'
 import QRCodeDisplay from './components/QRCodeDisplay'
 import DownloadButton from './components/DownloadButton'
 import Footer from './components/Footer'
@@ -10,6 +11,9 @@ function App() {
   const [debouncedUrl, setDebouncedUrl] = useState('')
   const [isValid, setIsValid] = useState(false)
   const [hasInput, setHasInput] = useState(false)
+  const [selectedSize, setSelectedSize] = useState('medium')
+
+  const qrSize = sizes.find((s) => s.key === selectedSize)?.value || 192
 
   const validateURL = useCallback((string) => {
     if (!string.trim()) return false
@@ -44,8 +48,15 @@ function App() {
             hasInput={hasInput}
           />
 
+          <div className="mt-4">
+            <SizeSelector
+              selectedSize={selectedSize}
+              onSizeChange={setSelectedSize}
+            />
+          </div>
+
           <div className="mt-6">
-            <QRCodeDisplay url={debouncedUrl} isValid={isValid} />
+            <QRCodeDisplay url={debouncedUrl} isValid={isValid} size={qrSize} />
           </div>
 
           {isValid && (
