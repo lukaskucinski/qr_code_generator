@@ -33,11 +33,14 @@ function QRCodeDisplay({ url, isValid, size = 192, dotStyle = 'square' }) {
         },
       })
     }
+  }, [])
 
-    if (ref.current && !ref.current.hasChildNodes()) {
+  useEffect(() => {
+    if (ref.current && qrCode.current) {
+      ref.current.innerHTML = ''
       qrCode.current.append(ref.current)
     }
-  }, [])
+  }, [isValid])
 
   useEffect(() => {
     if (qrCode.current) {
